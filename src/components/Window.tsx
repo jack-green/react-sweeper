@@ -1,17 +1,20 @@
-import React from 'react'
-import { createUseStyles } from 'react-jss'
+import React, { useState } from 'react';
+import { createUseStyles } from 'react-jss';
+import Draggable from 'react-draggable';
+
+import Emoji from './Emoji';
 
 const useStyles = createUseStyles({
   window: {
     backgroundColor: '#ccc',
-    border: '2px solid rgb(196, 148, 148)',
+    border: '2px solid #999',
     borderTopColor: '#fff',
     borderLeftColor: '#fff',
-    position: 'absolute',
-  
+    // position: 'absolute',
+
     // temp
-    left: 200,
-    top: 200,
+    // left: 200,
+    // top: 200,
     width: 400,
   },
   bar: {
@@ -28,34 +31,71 @@ const useStyles = createUseStyles({
   },
   controls: {
     marginLeft: 'auto',
-    'button': {
+    button: {
       marginLeft: 2,
     },
   },
-})
+  content: {
+
+  },
+  windowMinimized: {
+    position: 'absolute',
+    left: 20,
+    bottom: 0,
+  },
+  contentMinimized: {
+    height: 0,
+    overflow: 'hidden',
+  },
+});
 
 interface IProps {
-  title: String
-  icon: String
+  title: string
+  icon?: string
   children: React.ReactNode
 }
 
 const Window = ({ title, icon, children }:IProps) => {
+  const [minimized, setMinimized] = useState(false);
   const classes = useStyles();
+
+  const handleStop = () => {
+
+  };
+
+  const defaultPosition = { x: 0, y: 0 };
+
   return (
-    <div className={classes.window}>
-      <div className={classes.bar}>
-        <span className={classes.icon} role="img" aria-label="Window Icon">{icon || '⬛'}</span>
-        <div className={classes.title}>{title}</div>
-        <div className={classes.controls}>
-          <button>➖</button>
-          <button>➕</button>
-          <button>❌</button>
+    <Draggable
+      handle={`.${classes.bar}`}
+      defaultPosition={defaultPosition}
+      position={minimized ? { x: 0, y: 0 } : undefined}
+      scale={1}
+      axis={minimized ? 'x' : 'both'}
+      onStop={handleStop}
+      bounds="parent"
+      disabled={minimized}
+    >
+      <div className={`${classes.window} ${minimized ? classes.windowMinimized : ''}`}>
+        <div className={classes.bar}>
+          <Emoji alt="Window Icon" className={classes.icon} emoji={icon || '⬛'} />
+          <div className={classes.title}>{title}</div>
+          <div className={classes.controls}>
+            <button type="button" onClick={() => setMinimized(!minimized)}><Emoji alt="Minimize" emoji="➖" /></button>
+            <button type="button" disabled><Emoji alt="Maximize" emoji="➕" /></button>
+            <button type="button"><Emoji alt="Close" emoji="❌" /></button>
+          </div>
+        </div>
+        <div className={`${classes.content} ${minimized ? classes.contentMinimized : ''}`}>
+          {children}
         </div>
       </div>
-      {children}
-    </div>
+    </Draggable>
   );
-}
+};
 
-export default Window
+Window.defaultProps = {
+  icon: '⬛',
+};
+
+export default Window;

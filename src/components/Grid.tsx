@@ -1,5 +1,5 @@
 import React from 'react';
-import { createUseStyles } from 'react-jss'
+import { createUseStyles } from 'react-jss';
 
 const useStyles = createUseStyles({
   grid: {
@@ -12,15 +12,15 @@ const useStyles = createUseStyles({
   },
   cell: {
     position: 'relative',
-    flexBasis: props => `calc(100% / ${props.width})`,
+    flexBasis: (props) => `calc(100% / ${props.width})`,
     '&:before': {
       content: '""',
       display: 'block',
       paddingTop: '100%',
-    }
+    },
   },
   button: {
-    position:'absolute',
+    position: 'absolute',
     display: 'block',
     left: 0,
     top: 0,
@@ -39,11 +39,11 @@ const Grid = () => {
   const classes = useStyles({ width });
 
   const cells: Array<React.ReactNode> = [];
-  for(let y = 0; y < height; y += 1) {
-    for(let x = 0; x < width; x += 1) {
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
       cells.push((
         <div className={classes.cell} key={`${x}-${y}`}>
-          <button className={classes.button}></button>
+          <button type="button" className={classes.button}> </button>
         </div>
       ));
     }
@@ -52,7 +52,7 @@ const Grid = () => {
     <div className={classes.grid}>
       {cells}
     </div>
-  )
+  );
 };
 
 export default Grid;

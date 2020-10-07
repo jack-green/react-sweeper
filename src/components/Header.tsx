@@ -1,5 +1,6 @@
 import React from 'react';
-import { createUseStyles } from 'react-jss'
+import { createUseStyles } from 'react-jss';
+import Emoji from './Emoji';
 
 import SegmentNumber from './SegmentNumber/SegmentNumber';
 
@@ -21,7 +22,7 @@ const Header = () => {
       <div className="mines-remaining">
         <SegmentNumber value={10} digits={3} />
       </div>
-      <button>😊</button>
+      <button type="button"><Emoji alt="Smiley Face" emoji="😊" /></button>
       <div className="time">
         <SegmentNumber value={0} digits={3} />
       </div>

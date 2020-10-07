@@ -1,6 +1,7 @@
 import React from 'react';
-import { createUseStyles } from 'react-jss'
+import { createUseStyles } from 'react-jss';
 
+import TaskBar from './TaskBar/TaskBar';
 import Window from './Window';
 import Menu from './Menu';
 import Header from './Header';
@@ -21,7 +22,7 @@ const useStyles = createUseStyles({
     borderLeftColor: 'white',
     padding: 6,
   },
-})
+});
 
 const App = () => {
   const classes = useStyles();
@@ -34,8 +35,9 @@ const App = () => {
           <Grid />
         </div>
       </Window>
+      <TaskBar />
     </div>
   );
-}
+};
 
 export default App;
