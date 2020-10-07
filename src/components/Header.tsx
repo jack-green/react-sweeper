@@ -1,7 +1,7 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss'
 
-import SegmentNumber from './SegmentNumber';
+import SegmentNumber from './SegmentNumber/SegmentNumber';
 
 const useStyles = createUseStyles({
   header: {
