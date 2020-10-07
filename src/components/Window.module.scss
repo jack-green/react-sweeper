@@ -1,0 +1,32 @@
+.window {
+  background-color: #ccc;
+  border: 2px solid rgb(196, 148, 148);
+  border-top-color: #fff;
+  border-left-color: #fff;
+  position: absolute;
+
+  // temp
+  left: 200px;
+  top: 200px;
+  width: 400px;
+}
+
+.bar {
+  display: flex;
+  padding: 4px;
+  border: 2px solid #ccc;
+  background-color: darkblue;
+  color: white;
+  align-items: center;
+}
+
+.title {
+  margin-left: 2px;
+}
+
+.controls {
+  margin-left: auto;
+  button {
+    margin-left: 2px;
+  }
+}
