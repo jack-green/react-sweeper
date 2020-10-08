@@ -18,14 +18,14 @@ const segmentMap = [
 
 const useStyle = createUseStyles({
   svg: {
-    width: 20,
+    width: 16,
     height: 'auto',
   },
 });
 
 const svgStyle = {
   fillRule: 'evenodd' as const,
-  stroke: '#FFFFFF',
+  stroke: 'black',
   strokeWidth: 0.25,
   strokeOpacity: 1,
   strokeLinecap: 'butt' as const,

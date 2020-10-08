@@ -1,11 +1,10 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
 
+import { AppStoreProvider } from '../common/store';
+
 import TaskBar from './TaskBar/TaskBar';
-import Window from './Window';
-import Menu from './Menu';
-import Header from './Header';
-import Grid from './Grid';
+import Reactsweeper from './Reactsweeper/Reactsweeper';
 
 const useStyles = createUseStyles({
   app: {
@@ -14,6 +13,11 @@ const useStyles = createUseStyles({
     top: 0,
     width: '100%',
     height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  desktop: {
+    flexGrow: 1,
   },
   game: {
     margin: 2,
@@ -27,16 +31,14 @@ const useStyles = createUseStyles({
 const App = () => {
   const classes = useStyles();
   return (
-    <div className={classes.app}>
-      <Window title="Reactsweeper" icon="💣">
-        <Menu />
-        <div className={classes.game}>
-          <Header />
-          <Grid />
+    <AppStoreProvider>
+      <div className={classes.app}>
+        <div className={classes.desktop}>
+          <Reactsweeper />
         </div>
-      </Window>
-      <TaskBar />
-    </div>
+        <TaskBar />
+      </div>
+    </AppStoreProvider>
   );
 };
 

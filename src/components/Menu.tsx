@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { createUseStyles } from 'react-jss';
 
+import { useClickOutside } from '../common/hooks';
+
 import Emoji from './Emoji';
 
 const useStyles = createUseStyles({
@@ -12,190 +14,86 @@ const useStyles = createUseStyles({
     position: 'relative',
   },
   subMenu: {
-    backgroundColor: '#666',
+    backgroundColor: '#ccc',
     position: 'absolute',
     top: '100%',
     left: 0,
     opacity: 0,
     pointerEvents: 'none',
     zIndex: 10,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    paddingRight: 24,
   },
   active: {
     opacity: 1,
     pointerEvents: 'all',
   },
-  subMenuItem: {},
-  check: {},
+  subMenuItem: {
+    paddingLeft: 24,
+    position: 'relative',
+    display: 'flex',
+  },
+  check: {
+    position: 'absolute',
+    left: 4,
+  },
+  subMenuItemLabel: {
+    flexGrow: 1,
+  },
+  subMenuItemShortcut: {
+
+  },
+  hr: {
+    display: 'block',
+  }
 });
 
-const Menu = () => {
+interface IProps {
+  items: object[]
+  onClick: Function
+}
+
+const Menu = ({ items, onClick }:IProps) => {
   const classes = useStyles();
+  const ref = React.createRef<HTMLDivElement>();
   const [menuOpen, setMenuOpen] = useState('');
+
+  useClickOutside(ref, () => {
+    setMenuOpen('');
+  })
 
   const toggleMenu = (type: string) => {
     setMenuOpen(menuOpen === type ? '' : type);
   };
 
-  const menuStructure = [
-    {
-      id: 'game',
-      label: (
-        <span>
-          <u>G</u>
-          ame
-        </span>
-      ),
-      children: [
-        {
-          id: 'new',
-          label: (
-            <span>
-              <u>N</u>
-              ew
-            </span>
-          ),
-          shortcut: 'F2',
-        },
-        {
-          divider: true,
-        },
-        {
-          id: 'beginner',
-          label: (
-            <span>
-              <u>B</u>
-              eginner
-            </span>
-          ),
-          checked: true,
-        },
-        {
-          id: 'intermediate',
-          label: (
-            <span>
-              <u>I</u>
-              ntermediate
-            </span>
-          ),
-          checked: false,
-        },
-        {
-          id: 'expert',
-          label: (
-            <span>
-              <u>E</u>
-              xpert
-            </span>
-          ),
-          checked: false,
-        },
-        {
-          id: 'custom',
-          label: (
-            <span>
-              <u>C</u>
-              ustom...
-            </span>
-          ),
-        },
-        {
-          divider: true,
-        },
-        {
-          id: 'marks',
-          label: (
-            <span>
-              <u>M</u>
-              arks (?)
-            </span>
-          ),
-          checked: true,
-        },
-        {
-          id: 'color',
-          label: (
-            <span>
-              Co
-              <u>l</u>
-              or
-            </span>
-          ),
-          checked: true,
-        },
-        {
-          divider: true,
-        },
-        {
-          id: 'best-times',
-          label: (
-            <span>
-              Best
-              <u>T</u>
-              imes
-            </span>
-          ),
-        },
-        {
-          divider: true,
-        },
-        {
-          id: 'exit',
-          label: (
-            <span>
-              E
-              <u>x</u>
-              it
-            </span>
-          ),
-        },
-      ],
-    },
-    {
-      id: 'help',
-      label: (
-        <span>
-          <u>H</u>
-          elp
-        </span>
-      ),
-      children: [
-        {
-          id: 'help-topics',
-          label: (
-            <span>
-              <u>H</u>
-              elp Topics
-            </span>
-          ),
-        },
-        {
-          id: 'about',
-          label: (
-            <span>
-              <u>A</u>
-              bout Reactsweeper
-            </span>
-          ),
-        },
-      ],
-    },
-  ];
+  const handleClick = (id: string) => {
+    setMenuOpen('');
+    if (onClick) onClick(id);
+  }
 
   return (
-    <div className={classes.menu}>
-      {menuStructure.map((item) => (
+    <div className={classes.menu} ref={ref}>
+      {items.map((item: any) => (
         <div className={classes.menuItem} key={`item-${item.id}`}>
           <button type="button" onClick={() => toggleMenu(item.id)}>{item.label}</button>
           {item.children && (
             <div className={`${classes.subMenu} ${menuOpen === item.id ? classes.active : ''}`}>
-              {item.children.map((child) => {
-                if (child.divider) return <hr />;
+              {item.children.map((child: any, i: number) => {
+                if (child.divider) return <hr className={classes.hr} key={`hr-${i + 0}`} />;
                 return (
-                  <button type="button" key={child.id} className={classes.subMenuItem}>
+                  <button
+                    type="button"
+                    key={child.id}
+                    className={classes.subMenuItem}
+                    onClick={() => handleClick(child.id)}
+                  >
                     {child.checked && (
                       <Emoji alt="Checked" emoji="✔" className={classes.check} />
                     )}
-                    {child.label}
+                    <div className={classes.subMenuItemLabel}>{child.label}</div>
+                    {child.shortcut && <div className={classes.subMenuItemShortcut}>{child.shortcut}</div>}
                   </button>
                 );
               })}

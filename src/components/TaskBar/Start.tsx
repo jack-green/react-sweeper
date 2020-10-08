@@ -1,7 +1,9 @@
 import React from 'react';
 
+import Button from '../Button';
+
 const Start = () => (
-  <div>Start</div>
+  <Button>Start</Button>
 );
 
 export default Start;

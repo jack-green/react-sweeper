@@ -1,39 +1,48 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createUseStyles } from 'react-jss';
 
-import { IApp } from '../../common/types';
+import { IApp, IContext } from '../../common/types';
+import { AppStore } from '../../common/store';
 
 import Start from './Start';
 import App from './App';
 import Clock from './Clock';
 
 const useStyles = createUseStyles({
-  taskbar: {},
+  taskbar: {
+    display: 'flex',
+    backgroundColor: '#ccc',
+    padding: 2,
+  },
   start: {},
-  apps: {},
+  apps: {
+    flexGrow: 1,
+  },
 });
 
-interface IProps {
-  trayApps?: IApp[]
-}
-
-const TaskBar = ({ trayApps }: IProps) => {
+const TaskBar = () => {
+  const { state, dispatch }: IContext = useContext(AppStore);
   const classes = useStyles();
+
+  const toggleApp = (app: IApp): void => {
+    if (app.isMinimized) {
+      dispatch({ type: 'MAXIMIZE_APP', id: app.id } as any);
+    } else {
+      dispatch({ type: 'MINIMIZE_APP', id: app.id } as any);
+    }
+  };
+
   return (
     <div className={classes.taskbar}>
       <Start />
       <div className={classes.apps}>
-        {trayApps && trayApps.map((app) => (
-          <App app={app} />
+        {state.apps && state.apps.map((app: IApp) => (
+          <App key={app.id} app={app} onClick={() => toggleApp(app)} />
         ))}
       </div>
       <Clock />
     </div>
   );
-};
-
-TaskBar.defaultProps = {
-  trayApps: [],
 };
 
 export default TaskBar;

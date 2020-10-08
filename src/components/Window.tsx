@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createUseStyles } from 'react-jss';
 import Draggable from 'react-draggable';
 
+import Button from './Button';
 import Emoji from './Emoji';
 
 const useStyles = createUseStyles({
   window: {
+    display: 'inline-flex',
+    flexDirection: 'column',
     backgroundColor: '#ccc',
     border: '2px solid #999',
     borderTopColor: '#fff',
     borderLeftColor: '#fff',
-    // position: 'absolute',
-
-    // temp
-    // left: 200,
-    // top: 200,
-    width: 400,
+    opacity: 1,
   },
   bar: {
     display: 'flex',
@@ -31,17 +29,17 @@ const useStyles = createUseStyles({
   },
   controls: {
     marginLeft: 'auto',
-    button: {
-      marginLeft: 2,
-    },
+    display: 'flex',
+  },
+  control: {
+    marginLeft: 2,
   },
   content: {
 
   },
   windowMinimized: {
-    position: 'absolute',
-    left: 20,
-    bottom: 0,
+    opacity: 0,
+    pointerEvents: 0,
   },
   contentMinimized: {
     height: 0,
@@ -52,16 +50,23 @@ const useStyles = createUseStyles({
 interface IProps {
   title: string
   icon?: string
+  isMinimized?: boolean
   children: React.ReactNode
+  onMinimize?: () => void
+  onMaximize?: () => void
+  onClose?: () => void
 }
 
-const Window = ({ title, icon, children }:IProps) => {
-  const [minimized, setMinimized] = useState(false);
+const Window = ({
+  title,
+  icon,
+  children,
+  onClose,
+  isMinimized,
+  onMinimize,
+  onMaximize,
+}:IProps) => {
   const classes = useStyles();
-
-  const handleStop = () => {
-
-  };
 
   const defaultPosition = { x: 0, y: 0 };
 
@@ -69,24 +74,33 @@ const Window = ({ title, icon, children }:IProps) => {
     <Draggable
       handle={`.${classes.bar}`}
       defaultPosition={defaultPosition}
-      position={minimized ? { x: 0, y: 0 } : undefined}
       scale={1}
-      axis={minimized ? 'x' : 'both'}
-      onStop={handleStop}
       bounds="parent"
-      disabled={minimized}
+      disabled={isMinimized}
     >
-      <div className={`${classes.window} ${minimized ? classes.windowMinimized : ''}`}>
+      <div className={`${classes.window} ${isMinimized ? classes.windowMinimized : ''}`}>
         <div className={classes.bar}>
-          <Emoji alt="Window Icon" className={classes.icon} emoji={icon || '⬛'} />
+          {icon && <Emoji alt="Window Icon" className={classes.icon} emoji={icon || '⬛'} />}
           <div className={classes.title}>{title}</div>
           <div className={classes.controls}>
-            <button type="button" onClick={() => setMinimized(!minimized)}><Emoji alt="Minimize" emoji="➖" /></button>
-            <button type="button" disabled><Emoji alt="Maximize" emoji="➕" /></button>
-            <button type="button"><Emoji alt="Close" emoji="❌" /></button>
+            {(onMinimize || onMaximize) && (
+              <>
+                <Button disabled={!onMinimize} onClick={onMinimize} className={classes.control}>
+                  <Emoji alt="Minimize" emoji="➖" />
+                </Button>
+                <Button disabled={!onMaximize} onClick={onMaximize} className={classes.control}>
+                  <Emoji alt="Maximize" emoji="➕" />
+                </Button>
+              </>
+            )}
+            {onClose && (
+              <Button onClick={onClose} className={classes.control}>
+                <Emoji alt="Close" emoji="❌" />
+              </Button>
+            )}
           </div>
         </div>
-        <div className={`${classes.content} ${minimized ? classes.contentMinimized : ''}`}>
+        <div className={classes.content}>
           {children}
         </div>
       </div>
@@ -96,6 +110,10 @@ const Window = ({ title, icon, children }:IProps) => {
 
 Window.defaultProps = {
   icon: '⬛',
+  onMinimize: null,
+  onMaximize: null,
+  onClose: null,
+  isMinimized: false,
 };
 
 export default Window;
