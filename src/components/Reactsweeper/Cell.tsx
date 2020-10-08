@@ -1,7 +1,7 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
 
-import { ITile } from '../../common/types';
+import Tile from './engine/Tile';
 import Button from '../Button';
 import Emoji from '../Emoji';
 
@@ -31,11 +31,13 @@ const useStyles = createUseStyles({
 });
 
 interface IProps {
-  tile: ITile
-  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tile: ITile) => void
+  tile: Tile
+  onMouseDown: () => void
+  onMouseUp: () => void
+  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tile: Tile) => void
 }
 
-const Cell = ({ tile, onClick }: IProps) => {
+const Cell = ({ tile, onClick, onMouseDown, onMouseUp }: IProps) => {
   const classes = useStyles();
 
   if (tile.isRevealed) {
@@ -48,7 +50,12 @@ const Cell = ({ tile, onClick }: IProps) => {
 
   return (
     <div className={classes.cell}>
-      <Button className={classes.button} onClick={(e) => onClick(e, tile)}>
+      <Button
+        className={classes.button}
+        onMouseDown={() => onMouseDown()}
+        onMouseUp={() => onMouseUp()}
+        onMouseLeave={() => onMouseUp()}
+        onClick={(e) => onClick(e, tile)}>
         {tile.isFlagged ? 'F' : tile.value}
       </Button>
     </div>

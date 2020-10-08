@@ -11,6 +11,7 @@ import Grid from './Grid';
 
 import gameMenu from './menu';
 import Game from './engine/Game';
+import Tile from './engine/Tile';
 
 const useStyles = createUseStyles({
   game: {
@@ -127,8 +128,24 @@ const Reactsweeper = () => {
     setStatus('idle');
   };
 
-  const handleTileClick = () => {
+  const handleTileClick = (tile: Tile, toggleFlag: boolean) => {
+    console.log('tileclick', tile);
+    if (toggleFlag) {
+      if (!settings.allowMarks) return;
+      game.flag(tile.x, tile.y);
+      setGame(game);
+      return;
+    }
+
     // todo
+    if (tile.value === -1) {
+      alert('DED');
+      return;
+    }
+    // reveal
+    game.reveal(tile.x, tile.y);
+    console.log(game);
+    setGame(game);
   };
 
   return (

@@ -1,8 +1,8 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
-import { ITile } from '../../common/types';
 
 import Cell from './Cell';
+import Tile from './engine/Tile';
 
 const useStyles = createUseStyles({
   grid: {
@@ -18,18 +18,22 @@ const useStyles = createUseStyles({
 
 interface IProps {
   game: any
+  settings: any
+  onMouseDown: () => void
+  onMouseUp: () => void
+  onClick: (tile: Tile, toggleFlag: boolean) => void
 }
 
-const Grid = ({ game }: IProps) => {
+const Grid = ({
+  game,
+  onMouseDown,
+  onMouseUp,
+  onClick,
+}: IProps) => {
   const classes = useStyles();
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tile: ITile) => {
-    if (event.shiftKey) {
-      // right click / flag
-      return;
-    }
-    console.log(tile);
-
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tile: Tile) => {
+    onClick(tile, event.shiftKey);
   };
 
   const rows: Array<React.ReactNode> = [];
@@ -37,7 +41,15 @@ const Grid = ({ game }: IProps) => {
     const cells: Array<React.ReactNode> = [];
     for (let x = 0; x < game.width; x += 1) {
       const tile = game.get(x, y);
-      cells.push(<Cell key={`cell-${x}`} onClick={handleClick} tile={tile} />);
+      cells.push((
+        <Cell
+          key={`cell-${x}`}
+          onMouseDown={onMouseDown}
+          onMouseUp={onMouseUp}
+          onClick={handleClick}
+          tile={tile}
+        />
+      ));
     }
     rows.push((
       <div className={classes.row} key={`row-${y}`}>
