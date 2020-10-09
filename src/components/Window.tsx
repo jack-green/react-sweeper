@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createUseStyles } from 'react-jss';
 import Draggable from 'react-draggable';
 
@@ -23,9 +23,12 @@ const useStyles = createUseStyles({
     color: 'white',
     alignItems: 'center',
   },
-  icon: {},
+  icon: {
+    marginRight: 2,
+  },
   title: {
     marginLeft: 2,
+    fontSize: 14,
   },
   controls: {
     marginLeft: 'auto',
@@ -33,6 +36,14 @@ const useStyles = createUseStyles({
   },
   control: {
     marginLeft: 2,
+    padding: 0,
+    width: 20,
+    height: 20,
+  },
+  controlIcon: {
+    fontSize: 10,
+    position: 'relative',
+    top: 1,
   },
   content: {
 
@@ -70,6 +81,10 @@ const Window = ({
 
   const defaultPosition = { x: 0, y: 0 };
 
+  useEffect(() => {
+    // center window
+  }, []);
+
   return (
     <Draggable
       handle={`.${classes.bar}`}
@@ -86,16 +101,16 @@ const Window = ({
             {(onMinimize || onMaximize) && (
               <>
                 <Button disabled={!onMinimize} onClick={onMinimize} className={classes.control}>
-                  <Emoji alt="Minimize" emoji="➖" />
+                  <Emoji alt="Minimize" emoji="➖" className={classes.controlIcon} />
                 </Button>
                 <Button disabled={!onMaximize} onClick={onMaximize} className={classes.control}>
-                  <Emoji alt="Maximize" emoji="➕" />
+                  <Emoji alt="Maximize" emoji="➕" className={classes.controlIcon} />
                 </Button>
               </>
             )}
             {onClose && (
               <Button onClick={onClose} className={classes.control}>
-                <Emoji alt="Close" emoji="❌" />
+                <Emoji alt="Close" emoji="❌" className={classes.controlIcon} />
               </Button>
             )}
           </div>

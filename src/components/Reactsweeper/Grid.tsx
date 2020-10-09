@@ -2,6 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 
 import Cell from './Cell';
+import Game from './engine/Game';
 import Tile from './engine/Tile';
 
 const useStyles = createUseStyles({
@@ -17,8 +18,7 @@ const useStyles = createUseStyles({
 });
 
 interface IProps {
-  game: any
-  settings: any
+  game: Game
   onMouseDown: () => void
   onMouseUp: () => void
   onClick: (tile: Tile, toggleFlag: boolean) => void

@@ -3,7 +3,9 @@ import { createUseStyles } from 'react-jss';
 
 const useStyles = createUseStyles({
   button: {
-    display: 'block',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     listStyle: 'none',
     backgroundColor: '#ccc',
     border: '2px solid #fff',
@@ -31,7 +33,11 @@ interface IProps {
   className?: string
 }
 
-const Button: React.FC<IProps & React.HTMLProps<HTMLButtonElement>> = ({ className, children, ...nativeProps }:IProps) => {
+const Button: React.FC<IProps & React.HTMLProps<HTMLButtonElement>> = ({
+  className,
+  children,
+  ...nativeProps
+}:IProps) => {
   const classes = useStyles();
 
   return (

@@ -1,4 +1,13 @@
 import React from 'react';
+import { createUseStyles } from 'react-jss';
+
+const useStyles = createUseStyles({
+  emoji: {
+    fontSize: 14,
+    lineHeight: 1,
+    display: 'inline-block',
+  },
+});
 
 interface IProps {
   emoji: string
@@ -6,9 +15,18 @@ interface IProps {
   className?: string
 }
 
-const Emoji = ({ emoji, alt, className }: IProps) => (
-  <span role="img" aria-label={alt} className={className || ''}>{emoji}</span>
-);
+const Emoji = ({ emoji, alt, className }: IProps) => {
+  const classes = useStyles();
+  return (
+    <span
+      className={`${classes.emoji}  ${className}`}
+      role="img"
+      aria-label={alt}
+    >
+      {emoji}
+    </span>
+  );
+};
 
 Emoji.defaultProps = {
   className: '',

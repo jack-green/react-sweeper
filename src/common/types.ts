@@ -5,13 +5,6 @@ export interface IApp {
   isMinimized: boolean
 }
 
-export interface ITile {
-  index: number
-  value: number
-  isRevealed: boolean
-  isFlagged: boolean
-}
-
 export interface IState {
   apps: IApp[]
 }
