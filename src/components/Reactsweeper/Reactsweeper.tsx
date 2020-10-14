@@ -85,10 +85,12 @@ const Reactsweeper = () => {
     setGameData(data);
   };
 
-  useEffect(() => {
+  const initialize = () => {
     game.onUpdate = onUpdate;
     game.restart(settings);
-  }, []);
+  };
+
+  useEffect(initialize, []);
 
   const app = state.apps.find((a) => a.id === 'reactsweeper');
   if (!app || !gameData.length) return null;

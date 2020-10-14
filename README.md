@@ -3,7 +3,7 @@
 Re-live that sweet Windows 95 Minesweeper nostalgia in high-def React / Typescript / JSS.
 
 
-https://reactsweeper.netlify.com
+https://react-sweeper.netlify.app
 
 ## Why?
 

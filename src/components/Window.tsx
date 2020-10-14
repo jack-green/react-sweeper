@@ -95,16 +95,16 @@ const Window = ({
 }:IProps) => {
   const classes = useStyles();
   const winRef = useRef<HTMLDivElement>(null);
+  const [initialized, setInitialized] = useState(false);
   const [state, setState] = useState({
     isDragging: false,
     offset: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
-    opacity: 0,
   });
 
   useEffect(() => {
     // center window
-    if (winRef.current && state.opacity === 0) {
+    if (winRef.current && !initialized) {
       const winPos = { x: 0, y: 0 };
       const windowWidth = winRef.current.offsetWidth;
       const windowHeight = winRef.current.offsetHeight;
@@ -113,10 +113,10 @@ const Window = ({
       setState((s) => ({
         ...s,
         position: winPos,
-        opacity: 1,
       }));
+      setInitialized(true);
     }
-  }, [winRef]);
+  }, [winRef.current, initialized]);
 
   const handleMouseDown = useCallback(({ clientX, clientY }) => {
     setState((s) => ({
@@ -172,7 +172,6 @@ const Window = ({
         style={{
           left: state.position.x,
           top: state.position.y,
-          opacity: state.opacity,
         }}
         ref={winRef}
       >
