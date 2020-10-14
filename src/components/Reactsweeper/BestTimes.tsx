@@ -4,14 +4,22 @@ import { createUseStyles } from 'react-jss';
 import Window from '../Window';
 
 const useStyles = createUseStyles({
-  bestTimes: {},
+  bestTimes: {
+    width: 400,
+    height: 300,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 const BestTimes = () => {
   const classes = useStyles();
   return (
-    <Window title="Best Times" className={classes.bestTimes}>
-      BestTimes
+    <Window title="Best Times">
+      <div className={classes.bestTimes}>
+        TODO
+      </div>
     </Window>
   );
 };

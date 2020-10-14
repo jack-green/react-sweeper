@@ -65,9 +65,8 @@ interface IProps {
   title: string
   icon?: string
   isMinimized?: boolean
-  isBlocking?: boolean
+  isModal?: boolean
   className?: string
-  startPosition?: string
   children: React.ReactNode
   onMinimize?: () => void
   onMaximize?: () => void
@@ -79,12 +78,11 @@ const Window = ({
   icon,
   children,
   onClose,
+  isModal,
   isMinimized,
   onMinimize,
   onMaximize,
-  isBlocking,
   className,
-  startPosition
 }:IProps) => {
   const classes = useStyles();
   const winRef = useRef<HTMLDivElement>(null);
@@ -98,20 +96,11 @@ const Window = ({
   useEffect(() => {
     // center window
     if (winRef.current && state.opacity === 0) {
-
       const winPos = { x: 0, y: 0 };
       const windowWidth = winRef.current.offsetWidth;
       const windowHeight = winRef.current.offsetHeight;
-      const desktopWidth = window.innerWidth;
-      const desktopHeight = window.innerHeight;
-
-      if (startPosition === 'center') {
-        winPos.x = (desktopWidth - windowWidth) / 2;
-        winPos.y = (desktopHeight - windowHeight) / 2;
-      } else if (startPosition === 'right') {
-        winPos.x = (desktopHeight - windowWidth) - 20; // buffer
-        winPos.y = 20;
-      }
+      winPos.x = (window.innerWidth - windowWidth) / 2;
+      winPos.y = (window.innerHeight - windowHeight) / 2;
       setState((s) => ({
         ...s,
         position: winPos,
@@ -162,6 +151,8 @@ const Window = ({
     }
   }, [state.isDragging, handleMouseMove, handleMouseUp]);
 
+  console.log(isModal);
+
   return (
     <div
       className={`${classes.window}  ${className}  ${isMinimized ? classes.windowMinimized : ''}`}
@@ -205,14 +196,13 @@ const Window = ({
 };
 
 Window.defaultProps = {
-  icon: '⬛',
+  icon: '',
   onMinimize: null,
   onMaximize: null,
   onClose: null,
   isMinimized: false,
   className: '',
-  isBlocking: false,
-  startPosition: 'center',
+  isModal: false,
 };
 
 export default Window;

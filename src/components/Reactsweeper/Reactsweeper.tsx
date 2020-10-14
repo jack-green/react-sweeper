@@ -7,7 +7,7 @@ import { createUseStyles } from 'react-jss';
 import useInterval from '@rooks/use-interval';
 
 import { AppStore } from '../../common/store';
-import { IContext } from '../../common/types';
+import { IContext, IGameConfig } from '../../common/types';
 
 import Window from '../Window';
 import Menu from '../Menu';
@@ -93,9 +93,9 @@ const Reactsweeper = () => {
   const app = state.apps.find((a) => a.id === 'reactsweeper');
   if (!app || !gameData.length) return null;
 
-  const showWindow = (window: string) => {
+  const toggleWindow = (window: string, show: boolean) => {
     const newWindows: any = { ...windows };
-    newWindows[window] = true;
+    newWindows[window] = show;
     setWindows(newWindows);
   };
 
@@ -111,7 +111,7 @@ const Reactsweeper = () => {
     } as any);
   };
 
-  const restartGame = (config?: any): void => {
+  const restartGame = (config?: IGameConfig): void => {
     setStatus('idle');
     setInteractive(true);
     setGameStarted(false);
@@ -137,7 +137,7 @@ const Reactsweeper = () => {
         restartGame(presets[id]);
         break;
       case 'custom':
-        showWindow('customGame');
+        toggleWindow('customGame', true);
         break;
       case 'marks':
         if (settings.allowMarks) game.unmarkAll();
@@ -153,20 +153,29 @@ const Reactsweeper = () => {
         });
         break;
       case 'best-times':
-        showWindow('bestTimes');
+        toggleWindow('bestTimes', true);
         break;
       case 'exit':
         handleClose();
         break;
       case 'help-topics':
-        showWindow('help');
+        toggleWindow('help', true);
         break;
       case 'about':
-        showWindow('about');
+        toggleWindow('about', true);
         break;
       default:
         break;
     }
+  };
+
+  const customGame = (customConfig: IGameConfig) => {
+    toggleWindow('customGame', false);
+    setSettings({
+      ...settings,
+      ...customConfig,
+    });
+    restartGame(customConfig);
   };
 
   const handleGridMouseDown = () => {
@@ -240,7 +249,13 @@ const Reactsweeper = () => {
           />
         </div>
       </Window>
-      {windows.customGame && <CustomGame />}
+      {windows.customGame && (
+        <CustomGame
+          onClose={() => toggleWindow('customGame', false)}
+          onSubmit={customGame}
+          initialConfig={{ width: settings.width, height: settings.height, mines: settings.mines }}
+        />
+      )}
       {windows.bestTimes && <BestTimes />}
       {windows.help && <Help />}
       {windows.about && <About />}
