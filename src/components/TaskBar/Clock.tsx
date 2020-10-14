@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createUseStyles } from 'react-jss';
+import useInterval from '@rooks/use-interval';
+
 import Emoji from '../Emoji';
 
 const useStyles = createUseStyles({
@@ -19,12 +21,27 @@ const useStyles = createUseStyles({
   },
 });
 
+const formateDate = (date: Date) => {
+  let hours = date.getHours();
+  const ampm = hours < 12 ? 'AM' : 'PM';
+  if (hours > 12) hours -= 12;
+  return `${hours}:${date.getMinutes()} ${ampm}`;
+};
+
 const Clock = () => {
   const classes = useStyles();
+  const [date, setDate] = useState(new Date());
+
+  useInterval(() => {
+    setDate(new Date());
+  }, 1000);
+
   return (
     <div className={classes.clock}>
       <Emoji alt="Speaker" emoji="🔉" />
-      <span className={classes.time}>05:54am</span>
+      <span className={classes.time}>
+        {formateDate(date)}
+      </span>
     </div>
   );
 };

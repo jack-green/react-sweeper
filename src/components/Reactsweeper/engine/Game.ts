@@ -132,7 +132,6 @@ export default class Game {
     while (mineCount > 0) {
       const x = Math.floor(Math.random() * this.width);
       const y = Math.floor(Math.random() * this.height);
-      console.log(x, y);
       if (this.getValue(x, y) !== -1) {
         this.setValue(x, y, -1);
         offsets.forEach((offset) => {

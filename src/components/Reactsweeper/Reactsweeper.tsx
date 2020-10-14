@@ -4,6 +4,7 @@ import React, {
   useEffect,
 } from 'react';
 import { createUseStyles } from 'react-jss';
+import useInterval from '@rooks/use-interval';
 
 import { AppStore } from '../../common/store';
 import { IContext } from '../../common/types';
@@ -16,8 +17,15 @@ import Grid from './Grid';
 import gameMenu from './menu';
 import Game from './engine/Game';
 import Tile, { TileStatus } from './engine/Tile';
+import CustomGame from './CustomGame';
+import Help from './Help';
+import BestTimes from './BestTimes';
+import About from './About';
 
 const useStyles = createUseStyles({
+  reactSweeper: {
+    userSelect: 'none',
+  },
   game: {
     margin: 2,
     border: '4px solid #999',
@@ -54,12 +62,24 @@ const defaultSettings = {
 const game = new Game();
 
 const Reactsweeper = () => {
+  const [windows, setWindows] = useState({
+    customGame: false,
+    bestTimes: false,
+    help: false,
+    about: false,
+  });
   const [interactive, setInteractive] = useState(true);
+  const [gameStarted, setGameStarted] = useState(false);
   const [status, setStatus] = useState('idle');
+  const [timer, setTimer] = useState(0);
   const [gameData, setGameData] = useState('');
   const [settings, setSettings] = useState(defaultSettings);
   const { state, dispatch }: IContext = useContext(AppStore);
   const classes = useStyles();
+
+  const { start: startTimer, stop: stopTimer } = useInterval(() => {
+    setTimer(timer + 1);
+  }, 1000, false);
 
   const onUpdate = (data: string) => {
     setGameData(data);
@@ -72,6 +92,12 @@ const Reactsweeper = () => {
 
   const app = state.apps.find((a) => a.id === 'reactsweeper');
   if (!app || !gameData.length) return null;
+
+  const showWindow = (window: string) => {
+    const newWindows: any = { ...windows };
+    newWindows[window] = true;
+    setWindows(newWindows);
+  };
 
   const handleClose = () => {
     alert('No quitting!');
@@ -88,8 +114,10 @@ const Reactsweeper = () => {
   const restartGame = (config?: any): void => {
     setStatus('idle');
     setInteractive(true);
+    setGameStarted(false);
     game.restart(config || settings);
-    // todo: reset & pause timer
+    stopTimer();
+    setTimer(0);
   };
 
   const menu = gameMenu(settings);
@@ -109,7 +137,7 @@ const Reactsweeper = () => {
         restartGame(presets[id]);
         break;
       case 'custom':
-        alert('Custom game'); // todo
+        showWindow('customGame');
         break;
       case 'marks':
         if (settings.allowMarks) game.unmarkAll();
@@ -125,16 +153,16 @@ const Reactsweeper = () => {
         });
         break;
       case 'best-times':
-        alert('Best Times'); // todo
+        showWindow('bestTimes');
         break;
       case 'exit':
         handleClose();
         break;
       case 'help-topics':
-        alert('Help Topics'); // todo
+        showWindow('help');
         break;
       case 'about':
-        alert('About'); // todo
+        showWindow('about');
         break;
       default:
         break;
@@ -153,6 +181,10 @@ const Reactsweeper = () => {
 
   const handleTileClick = (tile: Tile, toggleFlag: boolean) => {
     if (!interactive) return;
+    if (!gameStarted) {
+      startTimer();
+      setGameStarted(true);
+    }
     if (toggleFlag) {
       game.flag(tile.x, tile.y, settings.allowMarks);
       return;
@@ -164,6 +196,7 @@ const Reactsweeper = () => {
       game.dead(tile);
       setStatus('dead');
       setInteractive(false);
+      stopTimer();
       // todo: stop timer
       return;
     }
@@ -171,35 +204,47 @@ const Reactsweeper = () => {
     game.reveal(tile.x, tile.y);
 
     if (game.revealedTileCount === settings.width * settings.height - settings.mines) {
-      // todo: stop timer, record score
       game.win();
       setStatus('won');
       setInteractive(false);
-      alert('WIN!');
+      stopTimer();
+      // todo: add score to fake high score table.
     }
   };
 
   const remaining = Math.max(0, settings.mines - game.flagCount);
 
   return (
-    <Window
-      title={app.title}
-      icon={app.icon}
-      isMinimized={app.isMinimized}
-      onClose={handleClose}
-      onMinimize={handleMinimize}
-    >
-      <Menu items={menu} onClick={handleMenuClick} />
-      <div className={classes.game}>
-        <Header onReset={restartGame} status={status} remaining={remaining} />
-        <Grid
-          game={game}
-          onMouseDown={handleGridMouseDown}
-          onMouseUp={handleGridMouseUp}
-          onClick={handleTileClick}
-        />
-      </div>
-    </Window>
+    <>
+      <Window
+        title={app.title}
+        icon={app.icon}
+        isMinimized={app.isMinimized}
+        onClose={handleClose}
+        onMinimize={handleMinimize}
+        className={classes.reactSweeper}
+      >
+        <Menu items={menu} onClick={handleMenuClick} />
+        <div className={classes.game}>
+          <Header
+            onReset={restartGame}
+            status={status}
+            remaining={remaining}
+            timer={timer}
+          />
+          <Grid
+            game={game}
+            onMouseDown={handleGridMouseDown}
+            onMouseUp={handleGridMouseUp}
+            onClick={handleTileClick}
+          />
+        </div>
+      </Window>
+      {windows.customGame && <CustomGame />}
+      {windows.bestTimes && <BestTimes />}
+      {windows.help && <Help />}
+      {windows.about && <About />}
+    </>
   );
 };
 

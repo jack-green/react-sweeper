@@ -21,15 +21,25 @@ const useStyles = createUseStyles({
     color: 'red',
     padding: 2,
   },
+  face: {
+    width: 31,
+    height: 31,
+  },
 });
 
 interface IProps {
   status: string
   remaining: number
+  timer: number
   onReset: () => void
 }
 
-const Header = ({ onReset, remaining, status }: IProps) => {
+const Header = ({
+  onReset,
+  remaining,
+  timer,
+  status,
+}: IProps) => {
   const classes = useStyles();
   let emoji = '😊';
   if (status === 'down') emoji = '😲';
@@ -41,9 +51,14 @@ const Header = ({ onReset, remaining, status }: IProps) => {
       <div className={classes.number}>
         <SegmentNumber value={remaining} digits={3} />
       </div>
-      <Button onClick={() => onReset()}><Emoji alt="Smiley Face" emoji={emoji} /></Button>
+      <Button
+        onClick={() => onReset()}
+        className={classes.face}
+      >
+        <Emoji alt="Emoji" emoji={emoji} />
+      </Button>
       <div className={classes.number}>
-        <SegmentNumber value={0} digits={3} />
+        <SegmentNumber value={Math.min(999, timer)} digits={3} />
       </div>
     </div>
   );

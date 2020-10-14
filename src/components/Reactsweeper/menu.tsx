@@ -101,6 +101,7 @@ export default function gameMenu(settings: any) {
           label: (
             <span>
               Best
+              {' '}
               <u>T</u>
               imes
             </span>
