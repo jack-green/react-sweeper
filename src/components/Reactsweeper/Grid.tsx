@@ -19,22 +19,16 @@ const useStyles = createUseStyles({
 
 interface IProps {
   game: Game
-  onMouseDown: () => void
-  onMouseUp: () => void
-  onClick: (tile: Tile, toggleFlag: boolean) => void
+  onMouseDown: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tile: Tile) => void
+  onMouseUp: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tile: Tile) => void
 }
 
 const Grid = ({
   game,
   onMouseDown,
   onMouseUp,
-  onClick,
 }: IProps) => {
   const classes = useStyles();
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tile: Tile) => {
-    onClick(tile, event.shiftKey);
-  };
 
   const rows: Array<React.ReactNode> = [];
   for (let y = 0; y < game.height; y += 1) {
@@ -46,7 +40,6 @@ const Grid = ({
           key={`cell-${x}`}
           onMouseDown={onMouseDown}
           onMouseUp={onMouseUp}
-          onClick={handleClick}
           tile={tile}
         />
       ));
@@ -58,7 +51,7 @@ const Grid = ({
     ));
   }
   return (
-    <div className={classes.grid}>
+    <div className={classes.grid} onContextMenu={(e) => e.preventDefault()}>
       {rows}
     </div>
   );

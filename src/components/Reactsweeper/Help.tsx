@@ -13,10 +13,14 @@ const useStyles = createUseStyles({
   },
 });
 
-const Help = () => {
+interface IProps {
+  onClose: () => void
+}
+
+const Help = ({ onClose }: IProps) => {
   const classes = useStyles();
   return (
-    <Window title="Help">
+    <Window title="Help" isModal onClose={onClose}>
       <div className={classes.help}>
         TODO
       </div>

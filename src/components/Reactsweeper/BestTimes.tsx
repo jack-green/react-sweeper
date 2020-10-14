@@ -13,10 +13,14 @@ const useStyles = createUseStyles({
   },
 });
 
-const BestTimes = () => {
+interface IProps {
+  onClose: () => void
+}
+
+const BestTimes = ({ onClose }: IProps) => {
   const classes = useStyles();
   return (
-    <Window title="Best Times">
+    <Window title="Best Times" isModal onClose={onClose}>
       <div className={classes.bestTimes}>
         TODO
       </div>

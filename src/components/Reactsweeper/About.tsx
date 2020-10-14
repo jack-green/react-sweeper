@@ -13,10 +13,14 @@ const useStyles = createUseStyles({
   },
 });
 
-const About = () => {
+interface IProps {
+  onClose: () => void
+}
+
+const About = ({ onClose }: IProps) => {
   const classes = useStyles();
   return (
-    <Window title="About Reactsweeper">
+    <Window title="About Reactsweeper" onClose={onClose} isModal>
       <div className={classes.about}>
         TODO
       </div>

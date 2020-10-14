@@ -17,6 +17,10 @@ const useStyles = createUseStyles({
     borderLeftColor: '#fff',
     opacity: 1,
     position: 'absolute',
+    zIndex: 11,
+  },
+  modalWindow: {
+    zIndex: 13,
   },
   bar: {
     display: 'flex',
@@ -55,9 +59,14 @@ const useStyles = createUseStyles({
     opacity: 0,
     pointerEvents: 0,
   },
-  contentMinimized: {
-    height: 0,
-    overflow: 'hidden',
+  modalBackground: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 12,
   },
 });
 
@@ -151,47 +160,53 @@ const Window = ({
     }
   }, [state.isDragging, handleMouseMove, handleMouseUp]);
 
-  console.log(isModal);
+  const classNames = [classes.window];
+  if (isMinimized) classNames.push(classes.windowMinimized);
+  if (isModal) classNames.push(classes.modalWindow);
+  if (className) classNames.push(className);
 
   return (
-    <div
-      className={`${classes.window}  ${className}  ${isMinimized ? classes.windowMinimized : ''}`}
-      style={{
-        left: state.position.x,
-        top: state.position.y,
-        opacity: state.opacity,
-      }}
-      ref={winRef}
-    >
+    <>
       <div
-        className={classes.bar}
-        role="presentation"
-        onMouseDown={handleMouseDown}
+        className={classNames.join('  ')}
+        style={{
+          left: state.position.x,
+          top: state.position.y,
+          opacity: state.opacity,
+        }}
+        ref={winRef}
       >
-        {icon && <Emoji alt="Window Icon" className={classes.icon} emoji={icon || '⬛'} />}
-        <div className={classes.title}>{title}</div>
-        <div className={classes.controls}>
-          {(onMinimize || onMaximize) && (
-            <>
-              <Button disabled={!onMinimize} onClick={onMinimize} className={classes.control}>
-                <Emoji alt="Minimize" emoji="➖" className={classes.controlIcon} />
+        <div
+          className={classes.bar}
+          role="presentation"
+          onMouseDown={handleMouseDown}
+        >
+          {icon && <Emoji alt="Window Icon" className={classes.icon} emoji={icon || '⬛'} />}
+          <div className={classes.title}>{title}</div>
+          <div className={classes.controls}>
+            {(onMinimize || onMaximize) && (
+              <>
+                <Button disabled={!onMinimize} onClick={onMinimize} className={classes.control}>
+                  <Emoji alt="Minimize" emoji="➖" className={classes.controlIcon} />
+                </Button>
+                <Button disabled={!onMaximize} onClick={onMaximize} className={classes.control}>
+                  <Emoji alt="Maximize" emoji="➕" className={classes.controlIcon} />
+                </Button>
+              </>
+            )}
+            {onClose && (
+              <Button onClick={onClose} className={classes.control}>
+                <Emoji alt="Close" emoji="❌" className={classes.controlIcon} />
               </Button>
-              <Button disabled={!onMaximize} onClick={onMaximize} className={classes.control}>
-                <Emoji alt="Maximize" emoji="➕" className={classes.controlIcon} />
-              </Button>
-            </>
-          )}
-          {onClose && (
-            <Button onClick={onClose} className={classes.control}>
-              <Emoji alt="Close" emoji="❌" className={classes.controlIcon} />
-            </Button>
-          )}
+            )}
+          </div>
+        </div>
+        <div className={classes.content}>
+          {children}
         </div>
       </div>
-      <div className={classes.content}>
-        {children}
-      </div>
-    </div>
+      {isModal && <div className={classes.modalBackground} />}
+    </>
   );
 };
 

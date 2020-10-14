@@ -178,49 +178,60 @@ const Reactsweeper = () => {
     restartGame(customConfig);
   };
 
-  const handleGridMouseDown = () => {
-    if (!interactive) return;
+  const handleGridMouseDown = (event: React.MouseEvent) => {
+    if (!interactive || event.nativeEvent.button !== 0 || event.shiftKey) return;
+    // change our :) to a :o
     setStatus('down');
   };
 
-  const handleGridMouseUp = () => {
+  const handleGridMouseUp = (event: React.MouseEvent, tile: Tile) => {
+    // game finished or theres a modal on top
     if (!interactive) return;
-    setStatus('idle');
-  };
 
-  const handleTileClick = (tile: Tile, toggleFlag: boolean) => {
-    if (!interactive) return;
+    // game doesn't start until the first click
     if (!gameStarted) {
       startTimer();
       setGameStarted(true);
     }
-    if (toggleFlag) {
+
+    // Right click / shift press, let's toggle the flag for this mine
+    if (event.shiftKey || event.nativeEvent.button === 2) {
       game.flag(tile.x, tile.y, settings.allowMarks);
       return;
     }
 
-    if (tile.status !== TileStatus.HIDDEN) return; // need to unflag first
+    // need to unflag before we can reveal this tile
+    if (tile.status !== TileStatus.HIDDEN) return;
 
+    // did we click on a mine?
     if (tile.value === -1) {
+      // RIP
       game.dead(tile);
       setStatus('dead');
       setInteractive(false);
       stopTimer();
-      // todo: stop timer
       return;
     }
+
     // reveal
     game.reveal(tile.x, tile.y);
 
+    // have all the squares been revealed?
     if (game.revealedTileCount === settings.width * settings.height - settings.mines) {
+      // YOU ARE WINNER
       game.win();
       setStatus('won');
       setInteractive(false);
       stopTimer();
       // todo: add score to fake high score table.
+      return;
     }
+
+    // change our :o to a :)
+    setStatus('idle');
   };
 
+  // How many mines are yet to be revealed?
   const remaining = Math.max(0, settings.mines - game.flagCount);
 
   return (
@@ -245,7 +256,6 @@ const Reactsweeper = () => {
             game={game}
             onMouseDown={handleGridMouseDown}
             onMouseUp={handleGridMouseUp}
-            onClick={handleTileClick}
           />
         </div>
       </Window>
@@ -256,9 +266,21 @@ const Reactsweeper = () => {
           initialConfig={{ width: settings.width, height: settings.height, mines: settings.mines }}
         />
       )}
-      {windows.bestTimes && <BestTimes />}
-      {windows.help && <Help />}
-      {windows.about && <About />}
+      {windows.bestTimes && (
+        <BestTimes
+          onClose={() => toggleWindow('bestTimes', false)}
+        />
+      )}
+      {windows.help && (
+        <Help
+          onClose={() => toggleWindow('help', false)}
+        />
+      )}
+      {windows.about && (
+        <About
+          onClose={() => toggleWindow('about', false)}
+        />
+      )}
     </>
   );
 };

@@ -41,9 +41,8 @@ const useStyles = createUseStyles({
 
 interface IProps {
   tile: Tile
-  onMouseDown: () => void
-  onMouseUp: () => void
-  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tile: Tile) => void
+  onMouseDown: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tile: Tile) => void
+  onMouseUp: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tile: Tile) => void
 }
 
 interface INumProps {
@@ -52,7 +51,6 @@ interface INumProps {
 
 const Cell = ({
   tile,
-  onClick,
   onMouseDown,
   onMouseUp,
 }: IProps) => {
@@ -103,9 +101,8 @@ const Cell = ({
     <div className={classes.cell}>
       <Button
         className={classes.button}
-        onMouseDown={() => onMouseDown()}
-        onMouseUp={() => onMouseUp()}
-        onClick={(e) => onClick(e, tile)}
+        onMouseDown={(e) => onMouseDown(e, tile)}
+        onMouseUp={(e) => onMouseUp(e, tile)}
       >
         {content}
       </Button>

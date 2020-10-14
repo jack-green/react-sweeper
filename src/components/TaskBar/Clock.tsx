@@ -25,7 +25,7 @@ const formateDate = (date: Date) => {
   let hours = date.getHours();
   const ampm = hours < 12 ? 'AM' : 'PM';
   if (hours > 12) hours -= 12;
-  return `${hours}:${date.getMinutes()} ${ampm}`;
+  return `${hours}:${date.getMinutes().toString().padStart(2, '0')} ${ampm}`;
 };
 
 const Clock = () => {

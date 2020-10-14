@@ -5,6 +5,8 @@ import { AppStoreProvider } from '../common/store';
 
 import TaskBar from './TaskBar/TaskBar';
 import Reactsweeper from './Reactsweeper/Reactsweeper';
+import Notes from './Notes';
+import DesktopIcon from './DesktopIcon';
 
 const useStyles = createUseStyles({
   app: {
@@ -34,6 +36,8 @@ const App = () => {
     <AppStoreProvider>
       <div className={classes.app}>
         <div className={classes.desktop}>
+          <Notes />
+          <DesktopIcon label="GitHub" icon="" />
           <Reactsweeper />
         </div>
         <TaskBar />
