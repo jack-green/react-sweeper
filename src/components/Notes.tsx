@@ -28,6 +28,7 @@ const Notes = () => {
 * Inactive window title bar colour
 * Dummy start menu
 * Keyboard shortcuts
+* Allow quitting / add desktop shortcut
 `}
     </div>
   );

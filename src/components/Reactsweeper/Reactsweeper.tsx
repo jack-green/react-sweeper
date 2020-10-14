@@ -100,6 +100,8 @@ const Reactsweeper = () => {
   };
 
   const handleClose = () => {
+    // todo: implement this.
+    // eslint-disable-next-line no-alert
     alert('No quitting!');
   };
 

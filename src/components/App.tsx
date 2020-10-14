@@ -7,6 +7,7 @@ import TaskBar from './TaskBar/TaskBar';
 import Reactsweeper from './Reactsweeper/Reactsweeper';
 import Notes from './Notes';
 import DesktopIcon from './DesktopIcon';
+import GitHub from './Svg/GitHub';
 
 const useStyles = createUseStyles({
   app: {
@@ -20,6 +21,10 @@ const useStyles = createUseStyles({
   },
   desktop: {
     flexGrow: 1,
+    display: 'flex',
+    padding: 20,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
   },
   game: {
     margin: 2,
@@ -37,7 +42,11 @@ const App = () => {
       <div className={classes.app}>
         <div className={classes.desktop}>
           <Notes />
-          <DesktopIcon label="GitHub" icon="" />
+          <DesktopIcon
+            label="GitHub"
+            icon={<GitHub />}
+            onClick={() => { document.location.href = 'https://github.com/jack-green/react-sweeper'; }}
+          />
           <Reactsweeper />
         </div>
         <TaskBar />

@@ -3,12 +3,22 @@ import { createUseStyles } from 'react-jss';
 
 const useStyles = createUseStyles({
   desktopIcon: {},
-  icon: {},
-  label: {},
+  icon: {
+    width: 64,
+    height: 64,
+    '& svg': {
+      width: 64,
+      height: 64,
+    },
+  },
+  label: {
+    fontSize: 12,
+    color: 'white',
+  },
 });
 
 interface IProps {
-  icon: string
+  icon: React.ReactNode
   label: string
   onClick?: () => void
 }
