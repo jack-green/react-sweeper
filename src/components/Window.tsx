@@ -116,7 +116,7 @@ const Window = ({
       }));
       setInitialized(true);
     }
-  }, [winRef.current, initialized]);
+  }, [winRef, initialized]);
 
   const handleMouseDown = useCallback(({ clientX, clientY }) => {
     setState((s) => ({
